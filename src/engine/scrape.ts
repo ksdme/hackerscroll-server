@@ -6,8 +6,10 @@ import ArticleContent from '../models/Article'
   Scrape a single article.
 */
 export async function scrape(url: string): Promise<ArticleContent | null> {
+  let dom: JSDOM | null = null
+
   try {
-    const dom = await JSDOM.fromURL(url, {
+    dom = await JSDOM.fromURL(url, {
       resources: 'usable',
       runScripts: 'dangerously',
       pretendToBeVisual: true,
@@ -23,5 +25,8 @@ export async function scrape(url: string): Promise<ArticleContent | null> {
   }
   catch (exception) {
     return null
+  }
+  finally {
+    dom?.window?.close()
   }
 }
