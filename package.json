@@ -9,9 +9,12 @@
     "dev": "ts-node-dev src/index.ts"
   },
   "devDependencies": {
+    "@types/jsdom": "^16.2.14",
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@mozilla/readability": "github:mozilla/readability",
+    "jsdom": "^19.0.0",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8"
   }
