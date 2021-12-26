@@ -1,12 +1,20 @@
 import Readability from '@mozilla/readability'
 import { JSDOM } from 'jsdom'
-import ArticleContent from '../models/Article'
+import { Logger } from 'tslog'
+
+const log = new Logger({
+  name: 'linkScrape',
+})
 
 /*
-  Scrape a single article.
+  Scrape a single link.
 */
-export async function scrape(url: string): Promise<ArticleContent | null> {
+export async function scrape(url: string) {
   let dom: JSDOM | null = null
+
+  if (!url) {
+    return null
+  }
 
   try {
     dom = await JSDOM.fromURL(url, {
@@ -17,13 +25,17 @@ export async function scrape(url: string): Promise<ArticleContent | null> {
 
     // If Readbility thinks that the document is not parseable.
     if (!Readability.isProbablyReaderable(dom.window.document)) {
+      log.info('Unparseable', url)
       return null
     }
 
     // Parse the document.
-    return new Readability.Readability(dom.window.document).parse()
+    return new Readability
+      .Readability(dom.window.document)
+      .parse()
   }
-  catch (exception) {
+  catch {
+    log.trace('Could not parse', url)
     return null
   }
   finally {
