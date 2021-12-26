@@ -62,8 +62,8 @@ export async function fetchTopStories(pages: number) {
 
       log.info('HN page processed', index)
     }
-    catch {
-      log.trace('Error while processing page', index)
+    catch (exception) {
+      log.trace('Error while processing page', index, exception)
     }
   }
 
