@@ -5,6 +5,7 @@ import Fastify from 'fastify'
 // TODO: Compress the response
 // TODO: Add caching headers
 // TODO: Cache database lookups
+// TODO: Add Cloudflare CDN
 
 const log = new Logger({
   name: 'server',
@@ -60,6 +61,36 @@ fastify.get('/api/top', {
     })
 
     return res.send(items)
+  },
+})
+
+/*
+  Returns a post by its HN ID.
+*/
+fastify.get('/api/item/:id', {
+  schema: {
+    params: {
+      id: {
+        type: 'number',
+      },
+    },
+  },
+  handler: async (req, res) => {
+    const params = req.params as {
+      id: number
+    }
+
+    const item = await prisma.post.findFirst({
+      where: {
+        hn_id: params.id,
+        visible: true,
+      },
+      include: {
+        Content: true,
+      },
+    })
+
+    return res.send(item)
   },
 })
 
