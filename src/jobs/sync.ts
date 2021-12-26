@@ -13,7 +13,7 @@ const prisma = new PrismaClient()
   Get a batch of top articles to process.
 */
 export default async function sync() {
-  const items = await fetchTopStories(5).catch(() => [])
+  const items = await fetchTopStories(8).catch(() => [])
   log.info('Processing', items?.length, 'items')
 
   // Calculate the starting rank for the posts.
