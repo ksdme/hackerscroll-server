@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client'
 import { Logger } from 'tslog'
 import Fastify from 'fastify'
 
+// TODO: Compress the response
+// TODO: Add caching headers
+// TODO: Cache database lookups
+
 const log = new Logger({
   name: 'server',
 })
