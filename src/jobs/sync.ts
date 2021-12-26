@@ -48,11 +48,15 @@ export default async function sync() {
         },
         select: {
           id: true,
+          unparsable: true,
           Content: true,
         },
       })
 
-      if (!post.Content && item.url) {
+      if (item.url
+          && !post.unparsable
+          && !post.Content
+          && shouldScrape(item.url)) {
         // Scrape the content from the url.
         const content = await scrape(item.url)
 
@@ -63,8 +67,7 @@ export default async function sync() {
               title: content?.title,
               byline: content?.byline,
               direction: content?.dir,
-              content: content?.textContent,
-              html_content: content?.content,
+              content: content?.content,
               length: content?.length,
               excerpt: content?.excerpt,
             },
@@ -72,15 +75,84 @@ export default async function sync() {
 
           log.info('Scraped', item.id, item.url)
         }
+        else {
+          await markUnparsable(post.id)
+        }
+      }
+      else {
+        await markUnparsable(post.id)
       }
 
-      log.info('Processed', item.id)
+      log.info(rank, 'Processed', item.id)
     }
-    catch {
-      log.trace('Could not process', item.id)
+    catch (exception) {
+      log.trace(rank, 'Could not process', item.id, exception)
     }
     finally {
       rank -= 1
     }
   }
+}
+
+/*
+  Returns a boolean flag indicating whether or not the url should be scraped.
+*/
+function shouldScrape(url: string) {
+  if (!url) {
+    return false
+  }
+
+  if (url.startsWith('https://news.ycombinator.com')) {
+    return false
+  }
+
+  if (url.startsWith('https://www.youtube.com')) {
+    return false
+  }
+
+  if (url.endsWith('.pdf')) {
+    return false
+  }
+
+  return true
+}
+
+/*
+  Mark the post as unparsable.
+*/
+async function markUnparsable(id: number) {
+  await prisma.post.update({
+    data: {
+      unparsable: true,
+    },
+    where: {
+      id,
+    },
+  })
+}
+
+/*
+  Run the job in the loop.
+*/
+async function main() {
+  log.info('Starting')
+
+  while (true) {
+    try {
+      await sync()
+      log.info('Cycle complete, sleeping')
+    }
+    catch (exception) {
+      log.trace('Cycle failed, sleeping', exception)
+    }
+
+    await new Promise((resolve) => setTimeout(
+      resolve,
+      6 * 60 * 1000,
+    ))
+  }
+}
+
+if (require.main === module) {
+  main()
 }

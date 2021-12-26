@@ -8,16 +8,17 @@ datasource db {
 }
 
 model Post {
-  id      Int       @id @default(autoincrement())
-  hn_id   Int       @unique
-  rank    Int?
-  by      String
-  url     String?
-  title   String    @db.Text
-  text    String?   @db.Text
-  date    DateTime?
-  visible Boolean   @default(true)
-  Content Content?
+  id         Int       @id @default(autoincrement())
+  hn_id      Int       @unique
+  rank       Int?
+  by         String
+  url        String?
+  title      String    @db.Text
+  text       String?   @db.Text
+  date       DateTime?
+  visible    Boolean   @default(true)
+  unparsable Boolean   @default(false)
+  Content    Content?
 
   @@index([rank])
 }
@@ -28,7 +29,6 @@ model Content {
   title        String? @db.Text
   byline       String? @db.Text
   content      String? @db.Text
-  html_content String? @db.Text
   excerpt      String? @db.Text
   length       Int?
   Post         Post    @relation(fields: [post_id], references: [id])

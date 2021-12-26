@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "ts-node-dev src/index.ts"
+    "dev": "ts-node-dev src/index.ts",
+    "job:sync": "ts-node src/jobs/sync.ts"
   },
   "devDependencies": {
     "@types/jsdom": "^16.2.14",
