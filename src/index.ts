@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Logger } from 'tslog'
 import Fastify from 'fastify'
+import CORS from 'fastify-cors'
 
 // TODO: Compress the response
 // TODO: Add caching headers
@@ -17,6 +18,13 @@ const prisma = new PrismaClient()
 // Fastify app.
 const fastify = Fastify({
   logger: true,
+})
+
+// Enable CORS.
+fastify.register(CORS, {
+  origin: [
+    process.env.FRONTEND_URL!,
+  ],
 })
 
 /*
@@ -60,7 +68,10 @@ fastify.get('/api/top', {
       skip: ((query.page ?? 1) - 1) * pageSize,
     })
 
-    return res.send(items)
+    return res.send({
+      page: (query.page ?? 1),
+      items,
+    })
   },
 })
 
@@ -97,7 +108,7 @@ fastify.get('/api/item/:id', {
 /*
   Start the server.
 */
-fastify.listen(3000, (error, address) => {
+fastify.listen(process.env.PORT ?? 3001, (error, address) => {
   if (error) {
     return log.trace(error)
   }
