@@ -9,6 +9,9 @@ const log = new Logger({
 
 /*
   Scrape a single link.
+
+  TODO: Remove JS from the HTML Content.
+  TODO: Remove empty nodes recursively.
 */
 export async function scrape(url: string) {
   let dom: JSDOM | null = null
