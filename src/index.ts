@@ -108,10 +108,14 @@ fastify.get('/api/item/:id', {
 /*
   Start the server.
 */
-fastify.listen(process.env.PORT ?? 3001, (error, address) => {
-  if (error) {
-    return log.trace(error)
-  }
+fastify.listen(
+  process.env.BIND_PORT ?? 3001,
+  process.env.BIND_ADDR ?? 'localhost',
+  (error, address) => {
+    if (error) {
+      return log.trace(error)
+    }
 
-  log.info('Started server at', address)
-})
+    log.info('Started server at', address)
+  },
+)
