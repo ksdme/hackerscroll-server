@@ -1,0 +1,43 @@
+# Requires docker-composer 1.29 or above.
+version: '3'
+
+x-application-service: &application
+  # TODO: Change image to the one on registry
+  image: hackerscroll
+  env_file:
+    - .env
+
+services:
+  database:
+    image: postgres:13
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - database:/var/lib/postgresql/data
+
+  migrate:
+    <<: *application
+    command: yarn run deploy-migrations
+
+  server:
+    <<: *application
+    restart: always
+    environment:
+      - BIND_ADDR=0.0.0.0
+      - BIND_PORT=3000
+    depends_on: &application-dependencies
+      database:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+
+  job.sync:
+    <<: *application
+    command: yarn run job:sync
+    restart: always
+    depends_on:
+      <<: *application-dependencies
+
+volumes:
+  database:
