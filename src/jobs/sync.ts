@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Logger } from 'tslog'
 import { fetchTopStories } from '../services/hn'
 import { scrape } from '../services/link'
+import { sleep } from '../utils/async'
 
 const log = new Logger({
   name: 'sync',
@@ -146,10 +147,7 @@ async function main() {
       log.trace('Cycle failed, sleeping', exception)
     }
 
-    await new Promise((resolve) => setTimeout(
-      resolve,
-      6 * 60 * 1000,
-    ))
+    await sleep(6 * 60 * 1000)
   }
 }
 

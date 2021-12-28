@@ -2,6 +2,7 @@ import axios from 'axios'
 import $ from 'cheerio'
 import { DateTime } from 'luxon'
 import { Logger } from 'tslog'
+import { sleep } from '../utils/async'
 
 const log = new Logger({
   name: 'hn',
@@ -10,7 +11,7 @@ const log = new Logger({
 /*
   Returns a batch of the top stories.
 */
-export async function fetchTopStories(pages: number) {
+export async function fetchTopStories(pages: number, slow = true) {
   const stories: HNStory[] = []
 
   for (let index = 1; index <= pages; index++) {
@@ -39,10 +40,6 @@ export async function fetchTopStories(pages: number) {
         const by = meta.find('a.hnuser').text()
         const time = meta.find('span.age').attr('title')
 
-        DateTime.fromISO('', {
-
-        })
-
         stories.push({
           id: id
             ? parseInt(id)
@@ -64,6 +61,10 @@ export async function fetchTopStories(pages: number) {
     }
     catch (exception) {
       log.trace('Error while processing page', index, exception)
+    }
+
+    if (slow) {
+      await sleep(2 * 1000)
     }
   }
 
