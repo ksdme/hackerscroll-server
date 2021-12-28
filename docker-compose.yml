@@ -36,7 +36,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=gateway"
-      - "traefik.http.routers.server.rule=Host(`${SERVER_HOST}`)"
+      - "traefik.http.routers.server.rule=Host(`api.hackerscroll.com`)"
       - "traefik.http.services.server.loadbalancer.server.port=3000"
 
   job.sync:
