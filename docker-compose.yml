@@ -9,7 +9,9 @@ x-application-service: &application
 
 services:
   database:
-    image: postgres:13
+    image: hackerscroll:latest
+    # TODO: Image should come from a registry.
+    build: .
     restart: always
     env_file:
       - .env
@@ -31,6 +33,11 @@ services:
         condition: service_started
       migrate:
         condition: service_completed_successfully
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=gateway"
+      - "traefik.http.routers.server.rule=Host(`${SERVER_HOST}`)"
+      - "traefik.http.services.server.loadbalancer.server.port=3000"
 
   job.sync:
     <<: *application
@@ -41,3 +48,7 @@ services:
 
 volumes:
   database:
+
+networks:
+  gateway:
+    external: true
