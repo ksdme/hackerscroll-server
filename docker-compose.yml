@@ -3,24 +3,28 @@ version: '3'
 
 x-application-service: &application
   # TODO: Change image to the one on registry
-  image: hackerscroll
+  image: hackerscroll:latest
+  # TODO: Image should come from a registry.
+  build: .
   env_file:
     - .env.production
 
 services:
   database:
-    image: hackerscroll:latest
-    # TODO: Image should come from a registry.
-    build: .
+    image: postgres:13
     restart: always
     env_file:
       - .env.production
     volumes:
       - database:/var/lib/postgresql/data
+    networks:
+      - internal
 
   migrate:
     <<: *application
     command: yarn run deploy-migrations
+    networks:
+      - internal
 
   server:
     <<: *application
@@ -40,11 +44,14 @@ services:
       - "traefik.http.services.server.loadbalancer.server.port=3000"
     networks:
       - gateway
+      - internal
 
   job.sync:
     <<: *application
     command: yarn run job:sync
     restart: always
+    networks:
+      - internal
     depends_on:
       <<: *application-dependencies
 
@@ -52,5 +59,6 @@ volumes:
   database:
 
 networks:
+  internal:
   gateway:
     external: true
