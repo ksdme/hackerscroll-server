@@ -30,7 +30,7 @@ fastify.register(CORS, {
 /*
   Returns a list of latest posts with the content on those pages.
 */
-fastify.get('/api/top', {
+fastify.get('/top', {
   schema: {
     querystring: {
       page: {
@@ -78,7 +78,7 @@ fastify.get('/api/top', {
 /*
   Returns a post by its HN ID.
 */
-fastify.get('/api/item/:id', {
+fastify.get('/item/:id', {
   schema: {
     params: {
       id: {
