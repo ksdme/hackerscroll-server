@@ -1,6 +1,6 @@
 import Readability from '@mozilla/readability'
 import axios from 'axios'
-import { JSDOM } from 'jsdom'
+import { JSDOM, VirtualConsole } from 'jsdom'
 import { Logger } from 'tslog'
 
 const log = new Logger({
@@ -34,6 +34,8 @@ export async function scrape(url: string) {
       resources: 'usable',
       runScripts: 'dangerously',
       pretendToBeVisual: true,
+      // Hide site console messages.
+      virtualConsole: new VirtualConsole(),
     })
 
     // If Readbility thinks that the document is not parseable.
