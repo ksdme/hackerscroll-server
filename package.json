@@ -11,6 +11,7 @@
     "deploy-migrations": "prisma migrate deploy"
   },
   "devDependencies": {
+    "@types/dompurify": "^2.3.2",
     "@types/jsdom": "^16.2.14",
     "@types/luxon": "^2.0.8",
     "prisma": "^3.7.0",
@@ -22,6 +23,7 @@
     "axios": "^0.24.0",
     "canvas": "^2.8.0",
     "cheerio": "^1.0.0-rc.10",
+    "dompurify": "^2.3.4",
     "fastify": "^3.25.2",
     "fastify-cors": "^6.0.2",
     "jsdom": "^19.0.0",

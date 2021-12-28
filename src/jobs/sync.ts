@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Logger } from 'tslog'
 import { fetchTopStories } from '../services/hn'
 import { scrape } from '../services/link'
+import { sanitize } from '../services/sanitize'
 import { sleep } from '../utils/async'
 
 const log = new Logger({
@@ -60,6 +61,11 @@ export default async function sync() {
           && shouldScrape(item.url)) {
         // Scrape the content from the url.
         const content = await scrape(item.url)
+
+        // Sanitize the html content of the page.
+        if (content?.content) {
+          content.content = await sanitize(content.content)
+        }
 
         if (content) {
           await prisma.content.create({
