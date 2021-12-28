@@ -5,7 +5,7 @@ x-application-service: &application
   # TODO: Change image to the one on registry
   image: hackerscroll
   env_file:
-    - .env
+    - .env.production
 
 services:
   database:
@@ -14,7 +14,7 @@ services:
     build: .
     restart: always
     env_file:
-      - .env
+      - .env.production
     volumes:
       - database:/var/lib/postgresql/data
 
