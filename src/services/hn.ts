@@ -1,7 +1,9 @@
 import axios from 'axios'
 import $ from 'cheerio'
+import isRelativeUrl from 'is-relative-url'
 import { DateTime } from 'luxon'
 import { Logger } from 'tslog'
+import { resolve } from 'url'
 import { sleep } from '../utils/async'
 
 const log = new Logger({
@@ -40,13 +42,18 @@ export async function fetchTopStories(pages: number, slow = true) {
         const by = meta.find('a.hnuser').text()
         const time = meta.find('span.age').attr('title')
 
+        // Resolve the link if it is relative.
+        const url = link && isRelativeUrl(link)
+          ? resolve('https://news.ycombinator.com', link)
+          : link
+
         stories.push({
           id: id
             ? parseInt(id)
             : -1,
           by,
           title,
-          url: link,
+          url,
           text,
           type: 'story',
           created_at: time

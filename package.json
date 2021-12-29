@@ -27,6 +27,7 @@
     "dompurify": "^2.3.4",
     "fastify": "^3.25.2",
     "fastify-cors": "^6.0.2",
+    "is-relative-url": "^3.0.0",
     "jsdom": "^19.0.0",
     "luxon": "^2.2.0",
     "memoizee": "^0.4.15",
