@@ -14,6 +14,7 @@
     "@types/dompurify": "^2.3.2",
     "@types/jsdom": "^16.2.14",
     "@types/luxon": "^2.0.8",
+    "@types/memoizee": "^0.4.6",
     "prisma": "^3.7.0",
     "typescript": "^4.5.4"
   },
@@ -28,6 +29,7 @@
     "fastify-cors": "^6.0.2",
     "jsdom": "^19.0.0",
     "luxon": "^2.2.0",
+    "memoizee": "^0.4.15",
     "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
     "tslog": "^3.3.0"

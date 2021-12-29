@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client'
-import { Logger } from 'tslog'
 import Fastify from 'fastify'
 import CORS from 'fastify-cors'
+import memoizee from 'memoizee'
+import { Logger } from 'tslog'
 
 // TODO: Compress the response
 // TODO: Add caching headers
@@ -28,6 +29,28 @@ fastify.register(CORS, {
 })
 
 /*
+  Returns a memoized function that returns top posts.
+*/
+const fetchTopCached = memoizee(async (page: number, size: number) => {
+  return await prisma.post.findMany({
+    where: {
+      visible: true,
+    },
+    orderBy: {
+      rank: 'desc',
+    },
+    include: {
+      Content: true,
+    },
+    take: size,
+    skip: page * size,
+  })
+}, {
+  async: true,
+  maxAge: 1 * 60 * 100,
+})
+
+/*
   Returns a list of latest posts with the content on those pages.
 */
 fastify.get('/top', {
@@ -49,28 +72,14 @@ fastify.get('/top', {
       page_size: number
     }
 
-    const pageSize = Math.min(
+    const size = Math.min(
       query.page_size ?? 30,
       30,
     )
 
-    const items = await prisma.post.findMany({
-      where: {
-        visible: true,
-      },
-      orderBy: {
-        rank: 'desc',
-      },
-      include: {
-        Content: true,
-      },
-      take: pageSize,
-      skip: ((query.page ?? 1) - 1) * pageSize,
-    })
-
     return res.send({
-      page: (query.page ?? 1),
-      items,
+      page: query.page ?? 1,
+      items: await fetchTopCached(query.page ?? 1, size),
     })
   },
 })
