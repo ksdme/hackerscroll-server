@@ -43,7 +43,7 @@ const fetchTopCached = memoizee(async (page: number, size: number) => {
       Content: true,
     },
     take: size,
-    skip: page * size,
+    skip: (page - 1) * size,
   })
 }, {
   async: true,
