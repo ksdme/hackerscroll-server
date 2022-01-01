@@ -24,6 +24,7 @@ const fastify = Fastify({
 // Enable CORS.
 fastify.register(CORS, {
   origin: [
+    /.*\.vercel\.app/,
     process.env.FRONTEND_URL!,
   ],
 })
